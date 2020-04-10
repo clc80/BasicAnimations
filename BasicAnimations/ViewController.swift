@@ -50,6 +50,11 @@ class ViewController: UIViewController {
         springButton.translatesAutoresizingMaskIntoConstraints = false
         springButton.setTitle("Spring", for: .normal)
         springButton.addTarget(self, action: #selector(springButtonTapped), for: .touchUpInside)
+        
+        let keyButton = UIButton(type: .system)
+        keyButton.translatesAutoresizingMaskIntoConstraints = false
+        keyButton.setTitle("Key", for: .normal)
+        keyButton.addTarget(self, action: #selector(keyButtonTapped), for: .touchUpInside)
 
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -62,6 +67,7 @@ class ViewController: UIViewController {
         // Add the buttons inside the stackview
         stackView.addArrangedSubview(rotateButton)
         stackView.addArrangedSubview(springButton)
+        stackView.addArrangedSubview(keyButton)
         
         // Constrain the stackview
         NSLayoutConstraint.activate([
@@ -92,6 +98,27 @@ class ViewController: UIViewController {
         label.transform = CGAffineTransform(scaleX: 0.0001, y: 0.0001)
         UIView.animate(withDuration: 3.0, delay: 0, usingSpringWithDamping: 0.3, initialSpringVelocity: 0, options: [], animations: {
             self.label.transform = .identity
+        }, completion: nil)
+    }
+    
+    @objc private func keyButtonTapped() {
+        label.center = view.center
+        
+        UIView.animateKeyframes(withDuration: 5.0, delay: 0, options: [], animations: {
+            //Relative Start time and duration are based on percentages of the animation time so from 0% to 25% it will rotate
+            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.25) {
+                self.label.transform = CGAffineTransform(rotationAngle: .pi/4)
+            }
+            //this one will run from 25% for another 1/4 of the time so it will end at 50% of the time
+            UIView.addKeyframe(withRelativeStartTime: 0.25, relativeDuration: 0.25) {
+                self.label.transform = .identity
+            }
+            UIView.addKeyframe(withRelativeStartTime: 0.50, relativeDuration: 0.25) {
+                self.label.transform = CGAffineTransform(translationX: 0, y: -50)
+            }
+            UIView.addKeyframe(withRelativeStartTime: 0.75, relativeDuration: 0.25) {
+                self.label.transform = .identity
+            }
         }, completion: nil)
     }
 }
