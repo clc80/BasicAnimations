@@ -55,6 +55,11 @@ class ViewController: UIViewController {
         keyButton.translatesAutoresizingMaskIntoConstraints = false
         keyButton.setTitle("Key", for: .normal)
         keyButton.addTarget(self, action: #selector(keyButtonTapped), for: .touchUpInside)
+        
+        let squashButton = UIButton(type: .system)
+        squashButton.translatesAutoresizingMaskIntoConstraints = false
+        squashButton.setTitle("Squash", for: .normal)
+        squashButton.addTarget(self, action: #selector(squashButtonTapped), for: .touchUpInside)
 
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -68,6 +73,7 @@ class ViewController: UIViewController {
         stackView.addArrangedSubview(rotateButton)
         stackView.addArrangedSubview(springButton)
         stackView.addArrangedSubview(keyButton)
+        stackView.addArrangedSubview(squashButton)
         
         // Constrain the stackview
         NSLayoutConstraint.activate([
@@ -120,6 +126,35 @@ class ViewController: UIViewController {
                 self.label.transform = .identity
             }
         }, completion: nil)
+    }
+    @objc private func squashButtonTapped() {
+        //Move the label up (to make sure it's up all the way past the top of the screen we do minus(-) the size of the label) but still in the middle
+        label.center = CGPoint(x: view.center.x, y: -label.bounds.size.height)
+        
+        let  animationBlock = {
+            // fall down to the middle of the screen
+            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.4) {
+                self.label.center = self.view.center
+            }
+            // We have some overlap, scale in both dimensions so it's wide (170%) and short (60% shorter)
+            UIView.addKeyframe(withRelativeStartTime: 0.3, relativeDuration: 0.2) {
+                self.label.transform = CGAffineTransform(scaleX: 1.7, y: 0.6)
+            }
+            // Skinny and tall
+            UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.2) {
+                self.label.transform = CGAffineTransform(scaleX: 0.6, y: 1.7)
+            }
+            //smaller short and wide motion
+            UIView.addKeyframe(withRelativeStartTime: 0.7, relativeDuration: 0.15) {
+                self.label.transform = CGAffineTransform(scaleX: 1.11, y: 0.9)
+            }
+            //Back to normal
+            UIView.addKeyframe(withRelativeStartTime: 0.85, relativeDuration: 0.15) {
+                self.label.transform = .identity
+            }
+        }
+        
+        UIView.animateKeyframes(withDuration: 1.5, delay: 0, options: [], animations: animationBlock, completion: nil)
     }
 }
 
