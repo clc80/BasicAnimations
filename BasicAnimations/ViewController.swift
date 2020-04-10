@@ -45,6 +45,11 @@ class ViewController: UIViewController {
         rotateButton.translatesAutoresizingMaskIntoConstraints = false
         rotateButton.setTitle("Rotate", for: .normal)
         rotateButton.addTarget(self, action: #selector(rotateButtonTapped), for: .touchUpInside)
+        
+        let springButton = UIButton(type: .system)
+        springButton.translatesAutoresizingMaskIntoConstraints = false
+        springButton.setTitle("Spring", for: .normal)
+        springButton.addTarget(self, action: #selector(springButtonTapped), for: .touchUpInside)
 
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -54,8 +59,9 @@ class ViewController: UIViewController {
         stackView.axis = .horizontal
         stackView.distribution = .equalSpacing
         
-        // Add the rotate button inside the stackview
+        // Add the buttons inside the stackview
         stackView.addArrangedSubview(rotateButton)
+        stackView.addArrangedSubview(springButton)
         
         // Constrain the stackview
         NSLayoutConstraint.activate([
@@ -63,11 +69,30 @@ class ViewController: UIViewController {
             stackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
             stackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
         ])
-        
     }
 
     @objc private func rotateButtonTapped() {
+        //Reset to the center
+        label.center = view.center
         
+        UIView.animate(withDuration: 2.0, animations: {
+            self.label.transform = CGAffineTransform(rotationAngle: .pi/4)
+        }) { _ in
+            UIView.animate(withDuration: 2.0) {
+                //.identity means you go back to it's original state
+                self.label.transform = .identity
+            }
+        }
+        
+    }
+    
+    @objc private func springButtonTapped() {
+        label.center = view.center
+        
+        label.transform = CGAffineTransform(scaleX: 0.0001, y: 0.0001)
+        UIView.animate(withDuration: 3.0, delay: 0, usingSpringWithDamping: 0.3, initialSpringVelocity: 0, options: [], animations: {
+            self.label.transform = .identity
+        }, completion: nil)
     }
 }
 
