@@ -60,6 +60,11 @@ class ViewController: UIViewController {
         squashButton.translatesAutoresizingMaskIntoConstraints = false
         squashButton.setTitle("Squash", for: .normal)
         squashButton.addTarget(self, action: #selector(squashButtonTapped), for: .touchUpInside)
+        
+        let anticipationButton = UIButton(type: .system)
+        anticipationButton.translatesAutoresizingMaskIntoConstraints = false
+        anticipationButton.setTitle("Anticipation", for: .normal)
+        anticipationButton.addTarget(self, action: #selector(anticipationButtonTapped), for: .touchUpInside)
 
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -74,6 +79,7 @@ class ViewController: UIViewController {
         stackView.addArrangedSubview(springButton)
         stackView.addArrangedSubview(keyButton)
         stackView.addArrangedSubview(squashButton)
+        stackView.addArrangedSubview(anticipationButton)
         
         // Constrain the stackview
         NSLayoutConstraint.activate([
@@ -154,6 +160,28 @@ class ViewController: UIViewController {
             }
         }
         
+        UIView.animateKeyframes(withDuration: 1.5, delay: 0, options: [], animations: animationBlock, completion: nil)
+    }
+    
+    @objc func anticipationButtonTapped() {
+        label.center = view.center
+        
+        let animationBlock = {
+            //show that it's going to start moving
+            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.10) {
+                self.label.transform = CGAffineTransform(rotationAngle: .pi/16)
+            }
+            UIView.addKeyframe(withRelativeStartTime: 0.10, relativeDuration: 0.20) {
+                self.label.transform = CGAffineTransform(rotationAngle: -1 * .pi/16)
+            }
+            UIView.addKeyframe(withRelativeStartTime: 0.2, relativeDuration: 0.80) {
+                self.label.center = CGPoint(
+                    x: self.view.bounds.size.width + self.label.bounds.size.width,
+                    y: self.view.center.y
+                )
+            }
+        }
+            
         UIView.animateKeyframes(withDuration: 1.5, delay: 0, options: [], animations: animationBlock, completion: nil)
     }
 }
